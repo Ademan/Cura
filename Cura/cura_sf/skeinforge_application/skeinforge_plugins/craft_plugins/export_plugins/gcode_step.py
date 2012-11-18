@@ -73,7 +73,6 @@ Defines the Z axis step length.
 
 
 from __future__ import absolute_import
-import __init__
 from fabmetheus_utilities import archive
 from fabmetheus_utilities import gcodec
 from fabmetheus_utilities import settings

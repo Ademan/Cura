@@ -1,6 +1,5 @@
 from __future__ import absolute_import
 from __future__ import division
-import __init__
 
 import types
 import math

@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import __init__
 
 import wx, sys, os, shutil, math, threading, subprocess, time, re, platform
 

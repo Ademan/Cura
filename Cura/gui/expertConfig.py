@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import __init__
 
 import wx, os, platform, types
 import ConfigParser

@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import __init__
 
 import wx, threading, re, subprocess, sys, os, time, platform
 from wx.lib import buttons

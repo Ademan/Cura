@@ -1,5 +1,4 @@
 from __future__ import absolute_import
-import __init__
 
 import os, glob, sys, time, math, re, traceback, threading
 import Queue as queue
