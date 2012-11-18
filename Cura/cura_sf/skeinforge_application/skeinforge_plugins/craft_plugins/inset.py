@@ -64,7 +64,6 @@ try:
 	psyco.full()
 except:
 	pass
-#Init has to be imported first because it has code to workaround the python bug where relative imports don't work if the module is imported as a main module.
 
 from fabmetheus_utilities.fabmetheus_tools import fabmetheus_interpret
 from fabmetheus_utilities.geometry.solids import triangle_mesh
@@ -227,8 +226,9 @@ def getOverhangDirection( belowOutsetLoops, segmentBegin, segmentEnd ):
 	solidXIntersectionList.append( euclidean.XIntersectionIndex( - 1.0, segmentEnd.real ) )
 	for belowLoopIndex in xrange( len( belowOutsetLoops ) ):
 		belowLoop = belowOutsetLoops[ belowLoopIndex ]
-		rotatedOutset = euclidean.getRotatedComplexes( segmentYMirror, belowLoop )
-		euclidean.addXIntersectionIndexesFromLoopY( rotatedOutset, belowLoopIndex, solidXIntersectionList, y )
+		rotatedOutset = euclidean.generateRotatedComplexes( segmentYMirror, belowLoop )
+		euclidean.iter_addXIntersectionIndexesFromLoopY( rotatedOutset, belowLoopIndex, solidXIntersectionList, y )
+                del rotatedOutset
 	overhangingSegments = euclidean.getSegmentsFromXIntersectionIndexes( solidXIntersectionList, y )
 	overhangDirection = complex()
 	for overhangingSegment in overhangingSegments:
