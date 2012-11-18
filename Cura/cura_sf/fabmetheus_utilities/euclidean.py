@@ -1762,18 +1762,18 @@ def isLineIntersectingLoops( loops, pointBegin, pointEnd ):
 	return False
 
 def isLoopIntersectingInsideXSegment( loop, segmentFirstX, segmentSecondX, segmentYMirror, y ):
-	'Determine if the loop is intersecting inside the x segment.'
-        if len(loop) < 1:
-            return False
+    'Determine if the loop is intersecting inside the x segment.'
+    if len(loop) < 1:
+        return False
 
-        pointFirst = segmentYMirror * loop[0]
-	for pointIndex in xrange(1, len(loop) + 1):
-		pointSecond = segmentYMirror * loop[pointIndex % len(loop)]
-		if isLineIntersectingInsideXSegment( pointFirst, pointSecond, segmentFirstX, segmentSecondX, y ):
-			return True
-                else:
-                    pointFirst = pointSecond
-	return False
+    pointFirst = segmentYMirror * loop[0]
+    for pointIndex in xrange(1, len(loop) + 1):
+        pointSecond = segmentYMirror * loop[pointIndex % len(loop)]
+        if isLineIntersectingInsideXSegment( pointFirst, pointSecond, segmentFirstX, segmentSecondX, y ):
+            return True
+        else:
+            pointFirst = pointSecond
+    return False
 
 def isLoopIntersectingLoop( loop, otherLoop ):
 	'Determine if the loop is intersecting the other loop.'
@@ -1877,17 +1877,17 @@ def isWithinChannel( channelRadius, pointIndex, loop ):
 	return aheadSegmentComplexLength * absoluteZ < channelRadius
 
 def isXSegmentIntersectingPath( path, segmentFirstX, segmentSecondX, segmentYMirror, y ):
-	'Determine if a path is crossing inside the x segment.'
-        if len(path) < 1:
-            return False
-        pointFirst = segmentYMirror * path[0]
-	for pointIndex in xrange(1, len(path)):
-		pointSecond = segmentYMirror * path[pointIndex]
-		if isLineIntersectingInsideXSegment( pointFirst, pointSecond, segmentFirstX, segmentSecondX, y ):
-			return True
-                else:
-                    pointFirst = pointSecond
-	return False
+    'Determine if a path is crossing inside the x segment.'
+    if len(path) < 1:
+        return False
+    pointFirst = segmentYMirror * path[0]
+    for pointIndex in xrange(1, len(path)):
+        pointSecond = segmentYMirror * path[pointIndex]
+        if isLineIntersectingInsideXSegment( pointFirst, pointSecond, segmentFirstX, segmentSecondX, y ):
+            return True
+        else:
+            pointFirst = pointSecond
+    return False
 
 def isXSegmentIntersectingPaths( paths, segmentFirstX, segmentSecondX, segmentYMirror, y ):
 	'Determine if a path list is crossing inside the x segment.'
