@@ -1763,12 +1763,16 @@ def isLineIntersectingLoops( loops, pointBegin, pointEnd ):
 
 def isLoopIntersectingInsideXSegment( loop, segmentFirstX, segmentSecondX, segmentYMirror, y ):
 	'Determine if the loop is intersecting inside the x segment.'
-	rotatedLoop = getRotatedComplexes( segmentYMirror, loop )
-	for pointIndex in xrange( len( rotatedLoop ) ):
-		pointFirst = rotatedLoop[pointIndex]
-		pointSecond = rotatedLoop[ (pointIndex + 1) % len( rotatedLoop ) ]
+        if len(loop) < 1:
+            return False
+
+        pointFirst = segmentYMirror * loop[0]
+	for pointIndex in xrange(1, len(loop) + 1):
+		pointSecond = segmentYMirror * loop[pointIndex % len(loop)]
 		if isLineIntersectingInsideXSegment( pointFirst, pointSecond, segmentFirstX, segmentSecondX, y ):
 			return True
+                else:
+                    pointFirst = pointSecond
 	return False
 
 def isLoopIntersectingLoop( loop, otherLoop ):
@@ -1874,12 +1878,15 @@ def isWithinChannel( channelRadius, pointIndex, loop ):
 
 def isXSegmentIntersectingPath( path, segmentFirstX, segmentSecondX, segmentYMirror, y ):
 	'Determine if a path is crossing inside the x segment.'
-	rotatedPath = getRotatedComplexes( segmentYMirror, path )
-	for pointIndex in xrange( len( rotatedPath ) - 1 ):
-		pointFirst = rotatedPath[pointIndex]
-		pointSecond = rotatedPath[pointIndex + 1]
+        if len(path) < 1:
+            return False
+        pointFirst = segmentYMirror * path[0]
+	for pointIndex in xrange(1, len(path)):
+		pointSecond = segmentYMirror * path[pointIndex]
 		if isLineIntersectingInsideXSegment( pointFirst, pointSecond, segmentFirstX, segmentSecondX, y ):
 			return True
+                else:
+                    pointFirst = pointSecond
 	return False
 
 def isXSegmentIntersectingPaths( paths, segmentFirstX, segmentSecondX, segmentYMirror, y ):
@@ -2070,7 +2077,7 @@ def unbuckleBasis( basis, maximumUnbuckling, normal ):
 	basis.setToVector3( basis * unbuckling )
 
 
-class DistanceIndex:
+class DistanceIndex(object):
 	'A class to hold the distance and the index of the loop.'
 	def __init__(self, distance, index):
 		'Initialize.'
@@ -2082,7 +2089,7 @@ class DistanceIndex:
 		return '%s, %s' % (self.distance, self.index)
 
 
-class Endpoint:
+class Endpoint(object):
 	'The endpoint of a segment.'
 	def __repr__(self):
 		'Get the string representation of this Endpoint.'
@@ -2185,7 +2192,7 @@ class Endpoint:
 		return self
 
 
-class LoopLayer:
+class LoopLayer(object):
 	'Loops with a z.'
 	def __init__(self, z):
 		'Initialize.'
@@ -2197,7 +2204,7 @@ class LoopLayer:
 		return '%s, %s' % (self.z, self.loops)
 
 
-class NestedRing:
+class NestedRing(object):
 	'A nested ring.'
 	def __init__(self):
 		'Initialize.'
@@ -2350,7 +2357,7 @@ class NestedBand(NestedRing):
 		self.infillPaths = getTransferredPaths(paths, self.boundary)
 
 
-class PathZ:
+class PathZ(object):
 	'Complex path with a z.'
 	def __init__( self, z ):
 		self.path = []
@@ -2361,7 +2368,7 @@ class PathZ:
 		return '%s, %s' % ( self.z, self.path )
 
 
-class ProjectiveSpace:
+class ProjectiveSpace(object):
 	'Class to define a projective space.'
 	def __init__( self, basisX = Vector3(1.0, 0.0, 0.0), basisY = Vector3( 0.0, 1.0, 0.0 ), basisZ = Vector3(0.0, 0.0, 1.0) ):
 		'Initialize the basis vectors.'
@@ -2471,7 +2478,7 @@ class ProjectiveSpace:
 		unbuckleBasis( self.basisY, maximumUnbuckling, normal )
 
 
-class XIntersectionIndex:
+class XIntersectionIndex(object):
 	'A class to hold the x intersection position and the index of the loop which intersected.'
 	def __init__( self, index, x ):
 		'Initialize.'
