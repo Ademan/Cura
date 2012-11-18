@@ -337,14 +337,33 @@ def getTextIfEmpty(fileName, text):
 	return getFileText(fileName)
 
 def getTextLines(text):
-	'Get the all the lines of text of a text.'
-	if '\r' in text:
-		text = text.replace('\r', '\n').replace('\n\n', '\n')
-	textLines = text.split('\n')
-	if len(textLines) == 1:
-		if textLines[0] == '':
-			return []
-	return textLines
+    'Get the all the lines of text of a text.'
+    if '\r' in text:
+        text = text.replace('\r', '\n').replace('\n\n', '\n')
+    textLines = text.split('\n')
+    if len(textLines) == 1:
+        if textLines[0] == '':
+            return []
+    return textLines
+
+import re
+
+def iterTextLines(text):
+    exp = re.compile('\r|\n')
+    pos = 0
+    while True:
+        match = exp.search(text, pos)
+        if not match:
+            if pos < len(text):
+                line = text[pos:]
+                if len(line) > 0:
+                    yield line
+            break
+        if pos < match.start():
+            line = text[pos:match.start()]
+            if len(line) > 0:
+                yield line
+        pos = match.end()
 
 def getUntilDot(text):
 	'Get the text until the last dot, if any.'

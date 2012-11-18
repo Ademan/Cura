@@ -295,7 +295,7 @@ def addXIntersectionIndexesFromLoopsY( loops, solidIndex, xIntersectionIndexList
 	for loop in loops:
 		addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, y )
 
-def addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, y ):
+def addXIntersectionIndexesFromLoopY(loop, solidIndex, xIntersectionIndexList, y ):
 	'Add the x intersection indexes for a loop.'
 	for pointIndex in xrange(len(loop)):
 		pointFirst = loop[pointIndex]
@@ -303,6 +303,25 @@ def addXIntersectionIndexesFromLoopY( loop, solidIndex, xIntersectionIndexList, 
 		xIntersection = getXIntersectionIfExists( pointFirst, pointSecond, y )
 		if xIntersection != None:
 			xIntersectionIndexList.append( XIntersectionIndex( solidIndex, xIntersection ) )
+
+def iter_addXIntersectionIndexesFromLoopY(loop, solidIndex, xIntersectionIndexList, y ):
+    'Add the x intersection indexes for a loop.'
+    loop_iter = iter(loop)
+    try:
+        first_point = next(loop_iter)
+        previous_point = first_point
+    except StopIteration:
+        return
+
+    for current_point in loop_iter:
+        xIntersection = getXIntersectionIfExists( previous_point, current_point, y )
+        if xIntersection != None:
+            xIntersectionIndexList.append( XIntersectionIndex( solidIndex, xIntersection ) )
+        previous_point = current_point
+
+    xIntersection = getXIntersectionIfExists( current_point, first_point, y )
+    if xIntersection != None:
+        xIntersectionIndexList.append( XIntersectionIndex( solidIndex, xIntersection ) )
 
 def addXIntersectionIndexesFromSegment( index, segment, xIntersectionIndexList ):
 	'Add the x intersection indexes from the segment.'
@@ -882,21 +901,21 @@ def getFourSignificantFigures(number):
 	return getRoundedToPlacesString( 3 - math.floor( math.log10( absoluteNumber ) ), number )
 
 def getHalfSimplifiedLoop( loop, radius, remainder ):
-	'Get the loop with half of the points inside the channel removed.'
-	if len(loop) < 2:
-		return loop
-	channelRadius = abs(radius * .01)
-	simplified = []
-	addIndex = 0
-	if remainder == 1:
-		addIndex = len(loop) - 1
-	for pointIndex in xrange(len(loop)):
-		point = loop[pointIndex]
-		if pointIndex % 2 == remainder or pointIndex == addIndex:
-			simplified.append(point)
-		elif not isWithinChannel( channelRadius, pointIndex, loop ):
-			simplified.append(point)
-	return simplified
+    'Get the loop with half of the points inside the channel removed.'
+    if len(loop) < 2:
+        return loop
+    channelRadius = abs(radius * .01)
+    simplified = []
+    addIndex = 0
+    if remainder == 1:
+        addIndex = len(loop) - 1
+    for pointIndex in xrange(len(loop)):
+        point = loop[pointIndex]
+        if pointIndex % 2 == remainder or pointIndex == addIndex:
+            simplified.append(point)
+        elif not isWithinChannel( channelRadius, pointIndex, loop ):
+            simplified.append(point)
+    return simplified
 
 def getHalfSimplifiedPath(path, radius, remainder):
 	'Get the path with half of the points inside the channel removed.'
@@ -1439,6 +1458,11 @@ def getRotatedComplexes(planeAngle, points):
 		rotatedComplexes.append(planeAngle * point)
 	return rotatedComplexes
 
+def generateRotatedComplexes(planeAngle, points):
+    'Get points rotated by the plane angle'
+    for point in points:
+        yield (planeAngle * point)
+
 def getRotatedComplexLists(planeAngle, pointLists):
 	'Get point lists rotated by the plane angle'
 	rotatedComplexLists = []
@@ -1513,26 +1537,26 @@ def getSegmentsFromXIntersections( xIntersections, y ):
 	return segments
 
 def getSimplifiedLoop( loop, radius ):
-	'Get loop with points inside the channel removed.'
-	if len(loop) < 2:
-		return loop
-	simplificationMultiplication = 256
-	simplificationRadius = radius / float( simplificationMultiplication )
-	maximumIndex = len(loop) * simplificationMultiplication
-	pointIndex = 1
-	while pointIndex < maximumIndex:
-		oldLoopLength = len(loop)
-		loop = getHalfSimplifiedLoop( loop, simplificationRadius, 0 )
-		loop = getHalfSimplifiedLoop( loop, simplificationRadius, 1 )
-		simplificationRadius += simplificationRadius
-		if oldLoopLength == len(loop):
-			if simplificationRadius > radius:
-				return getAwayPoints( loop, radius )
-			else:
-				simplificationRadius *= 1.5
-		simplificationRadius = min( simplificationRadius, radius )
-		pointIndex += pointIndex
-	return getAwayPoints( loop, radius )
+    'Get loop with points inside the channel removed.'
+    if len(loop) < 2:
+        return loop
+    simplificationMultiplication = 256
+    simplificationRadius = radius / float( simplificationMultiplication )
+    maximumIndex = len(loop) * simplificationMultiplication
+    pointIndex = 1
+    while pointIndex < maximumIndex:
+        oldLoopLength = len(loop)
+        loop = getHalfSimplifiedLoop( loop, simplificationRadius, 0 )
+        loop = getHalfSimplifiedLoop( loop, simplificationRadius, 1 )
+        simplificationRadius += simplificationRadius
+        if oldLoopLength == len(loop):
+            if simplificationRadius > radius:
+                return getAwayPoints( loop, radius )
+            else:
+                simplificationRadius *= 1.5
+        simplificationRadius = min( simplificationRadius, radius )
+        pointIndex += pointIndex
+    return getAwayPoints( loop, radius )
 
 def getSimplifiedLoops( loops, radius ):
 	'Get the simplified loops.'

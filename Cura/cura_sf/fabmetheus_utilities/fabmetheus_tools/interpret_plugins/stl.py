@@ -44,11 +44,10 @@ def addFacesGivenBinary( stlData, triangleMesh, vertexIndexTable ):
 
 def addFacesGivenText( stlText, triangleMesh, vertexIndexTable ):
 	"Add faces given stl text."
-	lines = archive.getTextLines( stlText )
 	vertexes = []
-	for line in lines:
-		if line.find('vertex') != - 1:
-			vertexes.append( getVertexGivenLine(line) )
+	for line in archive.iterTextLines(stlText):
+            if line.find('vertex') != - 1:
+                vertexes.append( getVertexGivenLine(line) )
 	addFacesGivenVertexes( triangleMesh, vertexIndexTable, vertexes )
 
 def addFacesGivenVertexes( triangleMesh, vertexIndexTable, vertexes ):
